@@ -15,6 +15,7 @@
 
 using namespace std;
 namespace fs = std::filesystem;
+int contadorIfs=0;
 
 struct Venta {
     int idVenta;
@@ -125,6 +126,7 @@ int obtenerSiguienteID(const string& archivoCSV) {
         getline(ss, campo, ',');
         int id = stoi(campo);
         if (id > maxID) {
+    contadorIfs++;
             maxID = id;
         }
     }
@@ -182,7 +184,7 @@ Venta cargarVentaDeUsuario(int idVenta) {
         case 2: v.categoria = "Oficina"; break;
         case 3: v.categoria = "Accesorios"; break;
         case 4: v.categoria = "Muebles"; break;
-        default: v.categoria = "Otra"; break;
+        default: cout<<"Opcion incorrecta"; break;
     }
 
     // Cantidad y precio
@@ -430,6 +432,7 @@ void eliminarVenta(vector<Venta>& ventas, const string& archivoCSV) {
 
     string filtro;
     if (modoBusqueda == 1) {
+    contadorIfs++;
         cout << "Seleccione el país:\n";
         cout << " 1) Argentina\n 2) Brasil\n 3) Chile\n 4) Colombia\n 5) Venezuela\n 6) Bolivia\n 7) Uruguay\n 8) Paraguay\n 9) Ecuador\n 10)Perú\n";
         int opcionPais;
@@ -450,6 +453,7 @@ void eliminarVenta(vector<Venta>& ventas, const string& archivoCSV) {
         default: cout << "❌ Opción inválida. Solo 1 (Argentina) a 10 (Perú).\n"; return;
     }
     } else if (modoBusqueda == 2) {
+    contadorIfs++;
         cout << "Ingrese el nombre exacto de la ciudad: ";
         getline(cin, filtro);
     } else {
@@ -527,6 +531,7 @@ void modificarVenta(vector<Venta>& ventas, const string& archivoCSV) {
 
     for (Venta& v : ventas) {
         if (v.idVenta == id) {
+    contadorIfs++;
             encontrada = true;
             pilaCambios.push(v);
             string entrada;
@@ -658,6 +663,7 @@ void modificarVenta(vector<Venta>& ventas, const string& archivoCSV) {
     }
 
     if (!encontrada) {
+    contadorIfs++;
         cout << "❌ No se encontró una venta con ese ID.\n";
     }
 }
@@ -672,6 +678,7 @@ void ventasPorCiudad(const vector<Venta>& ventas) {
     getline(cin, ciudad);
     for (const auto& v : ventas) {
         if (v.ciudad == ciudad) {
+    contadorIfs++;
             cout << v.idVenta << ", " << v.producto << ", " << v.categoria << ", " << v.pais << ", " << v.ciudad << ", " << v.fecha << endl;
         }
     }
@@ -708,6 +715,7 @@ void ventasPorRangoDeFechasYpais(const vector<Venta>& ventas) {
     for (const auto& v : ventas) {
         string fechaVentaISO = fechaDDMMAAAA_a_YYYYMMDD(v.fecha);
         if (v.pais == pais && fechaVentaISO >= fechaInicioISO && fechaVentaISO <= fechaFinISO) {
+    contadorIfs++;
             cout << v.idVenta << ", " << v.producto << ", " << v.fecha << ", " << v.cantidad << endl;
         }
     }
@@ -760,6 +768,7 @@ void compararPaises(const vector<Venta>& ventas) {
 
         for (const auto& v : ventas) {
             if (v.pais == pais1 || v.pais == pais2) {
+    contadorIfs++;
                 totalVentas[v.pais] += v.precioUnitario * v.cantidad;
                 productosVendidos[v.pais][v.producto] += v.cantidad;
                 mediosEnvio[v.pais][v.medioEnvio]++;
@@ -774,6 +783,7 @@ void compararPaises(const vector<Venta>& ventas) {
             int maxCantidad = 0;
             for (auto& [producto, cant] : productosVendidos[pais]) {
                 if (cant > maxCantidad) {
+    contadorIfs++;
                     masVendido = producto;
                     maxCantidad = cant;
                 }
@@ -784,6 +794,7 @@ void compararPaises(const vector<Venta>& ventas) {
             int maxUso = 0;
             for (auto& [medio, cantidad] : mediosEnvio[pais]) {
                 if (cantidad > maxUso) {
+    contadorIfs++;
                     medioMasUsado = medio;
                     maxUso = cantidad;
                 }
@@ -807,6 +818,7 @@ void compararProductos(const vector<Venta>& ventas) {
 
     for (const auto& v : ventas) {
         if (v.producto == prod1 || v.producto == prod2) {
+    contadorIfs++;
             estadisticas[v.pais][v.producto].first += v.cantidad;
             estadisticas[v.pais][v.producto].second += v.cantidad * v.precioUnitario;
         }
@@ -857,6 +869,7 @@ void productosPorDebajoDeUmbral(const vector<Venta>& ventas) {
 
     for (const auto& v : ventas) {
         if (v.pais == pais) {
+    contadorIfs++;
             acumulados[v.producto].first += v.precioUnitario * v.cantidad;
             acumulados[v.producto].second += v.cantidad;
         }
@@ -866,6 +879,7 @@ void productosPorDebajoDeUmbral(const vector<Venta>& ventas) {
     for (auto& [producto, datos] : acumulados) {
         float promedio = datos.first / datos.second;
         if (promedio < umbral) {
+    contadorIfs++;
             cout << producto << ", promedio: $" << promedio << endl;
         }
     }
@@ -896,6 +910,7 @@ int opcion;
 
     for (const auto& v : ventas) {
         if (v.pais == pais) {
+    contadorIfs++;
             acumulados[v.producto].first += v.precioUnitario * v.cantidad;
             acumulados[v.producto].second += v.cantidad;
         }
@@ -905,6 +920,7 @@ int opcion;
     for (auto& [producto, datos] : acumulados) {
         float promedio = datos.first / datos.second;
         if (promedio > umbral) {
+    contadorIfs++;
             cout << producto << ", promedio: $" << promedio << endl;
         }
     }
@@ -942,158 +958,133 @@ int main() {
     auto start = high_resolution_clock::now();
     vector<Venta> ventas = leerVentasDesdeCSV(archivoCSV);
     auto end = high_resolution_clock::now();
-        auto duration = duration_cast<milliseconds>(end - start);
-        std::cout << "Tiempo de carga (ms): " << duration.count() << std::endl;
+    auto duration = duration_cast<milliseconds>(end - start);
+    std::cout << "Tiempo de carga (ms): " << duration.count() << std::endl;
 
-        std::cout << "Se leyeron " << ventas.size() << " ventas.\n\n";
-        std::cout << "Primeras ventas leídas desde el archivo:\n";
-        mostrarVentas(ventas);
+    std::cout << "Se leyeron " << ventas.size() << " ventas.\n\n";
+    std::cout << "Primeras ventas leídas desde el archivo:\n";
+    mostrarVentas(ventas);
 
-        HashMap<int, Venta*> ventasPorID(ventas.size() * 2);
-        for (auto& v : ventas) {
-            ventasPorID.put(v.idVenta, &v);
-        }
+    HashMap<int, Venta*> ventasPorID(ventas.size() * 2);
+    for (auto& v : ventas) {
+        ventasPorID.put(v.idVenta, &v);
+    }
 
-        do {
-            std::cout << "\n\033[1;34m====== MENU PRINCIPAL ======\033[0m\n";
-            std::cout << "\033[32m1. Buscar venta por ID\033[0m\n";
-            std::cout << "\033[33m2. Cargar nueva venta\033[0m\n";
-            std::cout << "\033[35m3. Eliminar venta\033[0m\n";
-            std::cout << "\033[36m4. Modificar una venta\033[0m\n";
-            std::cout << "\033[34m5. Mostrar estadisticas generales (sin eliminar)\033[0m\n";
-            std::cout << "\033[36m6. Consultas dinamicas solicitadas por el usuario\033[0m\n";
-            std::cout << "\033[31m7. Salir del programa\033[0m\n";
+    do {
+        std::cout << "\n\033[1;34m====== MENU PRINCIPAL ======\033[0m\n";
+        std::cout << "\033[32m1. Buscar venta por ID\033[0m\n";
+        std::cout << "\033[33m2. Cargar nueva venta\033[0m\n";
+        std::cout << "\033[35m3. Eliminar venta\033[0m\n";
+        std::cout << "\033[36m4. Modificar una venta\033[0m\n";
+        std::cout << "\033[34m5. Mostrar estadísticas generales\033[0m\n";
+        std::cout << "\033[36m6. Consultas dinámicas solicitadas por el usuario\033[0m\n";
+        std::cout << "\033[31m7. Salir del programa\033[0m\n";
 
-            opcion = leerEnteroSeguro("\033[36mSeleccione una opción: \033[0m");
+        opcion = leerEnteroSeguro("\033[36mSeleccione una opción: \033[0m");
 
-            switch (opcion) {
-                case 1:
-                    buscarVentaPorIDHashMap(ventasPorID);
-                    std::cout << "\033[32mBúsqueda completada.\033[0m\n";
-                    break;
-                case 2:
-                    cargarNuevaVenta(ventas, archivoCSV);
-                    ventasPorID.put(ventas.back().idVenta, &ventas.back());
-                    break;
-                case 3:
-                    eliminarVenta(ventas, archivoCSV);
-                    ventasPorID = HashMap<int, Venta*>(ventas.size() * 2);
-                    for (auto& v : ventas) ventasPorID.put(v.idVenta, &v);
-                    break;
-                case 4:
-                    modificarVenta(ventas, archivoCSV);
-                    ventasPorID = HashMap<int, Venta*>(ventas.size() * 2);
-                    for (auto& v : ventas) ventasPorID.put(v.idVenta, &v);
-                    break;
-                case 5:
-                    int subopcionEstadisticas;
-                    do {
-                        std::cout << "\n\033[1;34m--- ESTADISTICAS GENERALES ---\033[0m\n";
-                        std::cout << "1. Top 5 ciudades por país\n";
-                        std::cout << "2. Monto total por producto por país\n";
-                        std::cout << "3. Promedio por categoría por país\n";
-                        std::cout << "4. Estado de envío más frecuente por país\n";
-                        std::cout << "5. Producto más y menos vendido\n";
-                        std::cout << "6. Día con más ventas\n";
-                        std::cout << "7. Medio de envío más frecuente por país\n";
-                        std::cout << "8. Volver al menú principal\n";
-                        subopcionEstadisticas = leerEnteroSeguro("Seleccione una opción (1-8): ");
-                        switch (subopcionEstadisticas) {
-                            case 1:
-                                Top5CiudadesPorPais(ventas);
-                                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
-                                break;
-                            case 2:
-                                montoTotalPorProductoPorPais(ventas);
-                                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
-                                break;
-                            case 3:
-                                promedioCategoriaPorPais(ventas);
-                                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
-                                break;
-                            case 4:
-                                estadoMasFrecuentePorPais(ventas);
-                                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
-                                break;
-                            case 5:
-                                productoMasYMenosVendido(ventas);
-                                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
-                                break;
-                            case 6:
-                                diaConMasVentas(ventas);
-                                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
-                                break;
-                            case 7:
-                                medioDeEnvioMasFrecuentePorPais(ventas);
-                                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
-                                break;
-                            case 8:
-                                std::cout << "Volviendo al menú principal...\n";
-                                break;
-                            default:
-                                std::cout << "\033[31mOpción inválida.\033[0m\n";
-                                break;
-                        }
-                    } while (subopcionEstadisticas != 8);
-                    break;
-                case 6: {
-                    int subopcion;
-                    do {
-                        std::cout << "\n\033[1;34m--- CONSULTAS DINÁMICAS ---\033[0m\n";
-                        std::cout << "\033[32m1. Ventas en una ciudad específica\033[0m\n";
-                        std::cout << "\033[33m2. Ventas en rango de fechas por país\033[0m\n";
-                        std::cout << "\033[35m3. Comparar dos países\033[0m\n";
-                        std::cout << "\033[36m4. Comparar dos productos por cada país\033[0m\n";
-                        std::cout << "\033[31m5. Productos por debajo de un umbral (por país)\033[0m\n";
-                        std::cout << "\033[31m6. Productos por encima de un umbral (por país)\033[0m\n";
-                        std::cout << "\033[31m7. Volver al menú principal\033[0m\n";
+        switch (opcion) {
+            case 1: {
+                auto start = high_resolution_clock::now();
+                buscarVentaPorIDHashMap(ventasPorID);
+                auto end = high_resolution_clock::now();
+                auto duration = duration_cast<milliseconds>(end - start);
+                cout << "\033[32m⏱ Tiempo: " << duration.count() << " ms\033[0m\n";
+                break;
+            }
+            case 2:
+                cargarNuevaVenta(ventas, archivoCSV);
+                ventasPorID.put(ventas.back().idVenta, &ventas.back());
+                break;
+            case 3:
+                eliminarVenta(ventas, archivoCSV);
+                ventasPorID = HashMap<int, Venta*>(ventas.size() * 2);
+                for (auto& v : ventas) ventasPorID.put(v.idVenta, &v);
+                break;
+            case 4:
+                modificarVenta(ventas, archivoCSV);
+                ventasPorID = HashMap<int, Venta*>(ventas.size() * 2);
+                for (auto& v : ventas) ventasPorID.put(v.idVenta, &v);
+                break;
 
-                        subopcion = leerEnteroSeguro("\033[36mSeleccione una opción: \033[0m");
+            case 5: {
+                int subopcionEstadisticas;
+                do {
+                    std::cout << "\n\033[1;34m--- ESTADISTICAS GENERALES ---\033[0m\n";
+                    std::cout << "1. Top 5 ciudades por país\n";
+                    std::cout << "2. Monto total por producto por país\n";
+                    std::cout << "3. Promedio por categoría por país\n";
+                    std::cout << "4. Estado de envío más frecuente por país\n";
+                    std::cout << "5. Producto más y menos vendido\n";
+                    std::cout << "6. Día con más ventas\n";
+                    std::cout << "7. Medio de envío más frecuente por país\n";
+                    std::cout << "8. Volver al menú principal\n";
 
-                        switch (subopcion) {
-                            case 1: 
-                                ventasPorCiudad(ventas); 
-                                cout << "\033[34mLa estructura utilizada fue: VECTOR\033[0m" << endl;
-                                break;
-                            case 2: 
-                                ventasPorRangoDeFechasYpais(ventas); 
-                                cout << "\033[34mLa estructura utilizada fue: VECTOR\033[0m" << endl;
-                                break;
-                            case 3: 
-                                compararPaises(ventas); 
-                                cout << "\033[34mLa estructura utilizada fue: MAP\033[0m" << endl;
-                                break;
-                            case 4: 
-                                compararProductos(ventas); 
-                                cout << "\033[34mLa estructura utilizada fue: MAP\033[0m" << endl;
-                                break;
-                            case 5: 
-                                productosPorDebajoDeUmbral(ventas); 
-                                cout << "\033[34mLa estructura utilizada fue: MAP\033[0m" << endl;
-                                break;
-                            case 6: 
-                                productosPorEncimaDeUmbral(ventas); 
-                                cout << "\033[34mLa estructura utilizada fue: MAP\033[0m" << endl;
-                                break;
-                            case 7: 
-                                std::cout << "\033[33mVolviendo al menú principal...\033[0m\n"; 
-                                break;
-                            default: 
-                                std::cout << "\033[31mOpción inválida.\033[0m\n"; 
-                                break;
-                        }
-                    } while (subopcion != 7);
-                    break;
-                }
-                case 7:
-                    std::cout << "\033[31mSaliendo del programa...\033[0m\n";
-                    break;
-                default:
-                    std::cout << "\033[31mOpción inválida.\033[0m\n";
-                    break;
+                    subopcionEstadisticas = leerEnteroSeguro("Seleccione una opción (1-8): ");
+                    auto start = high_resolution_clock::now();
+                    switch (subopcionEstadisticas) {
+                        case 1: Top5CiudadesPorPais(ventas); break;
+                        case 2: montoTotalPorProductoPorPais(ventas); break;
+                        case 3: promedioCategoriaPorPais(ventas); break;
+                        case 4: estadoMasFrecuentePorPais(ventas); break;
+                        case 5: productoMasYMenosVendido(ventas); break;
+                        case 6: diaConMasVentas(ventas); break;
+                        case 7: medioDeEnvioMasFrecuentePorPais(ventas); break;
+                        case 8: std::cout << "Volviendo al menú principal.\n"; break;
+                        default: std::cout << "\033[31mOpción inválida.\033[0m\n"; break;
+                    }
+                    auto end = high_resolution_clock::now();
+                    auto duration = duration_cast<milliseconds>(end - start);
+                    if (subopcionEstadisticas >= 1 && subopcionEstadisticas <= 7)
+                        cout << "⏱ Tiempo: " << duration.count() << " ms\n";
+
+                } while (subopcionEstadisticas != 8);
+                break;
             }
 
-        } while (opcion != 7);
+            case 6: {
+                int subopcion;
+                do {
+                    std::cout << "\n\033[1;34m--- CONSULTAS DINÁMICAS ---\033[0m\n";
+                    std::cout << "\033[32m1. Ventas por ciudad\033[0m\n";
+                    std::cout << "\033[33m2. Ventas por rango de fechas\033[0m\n";
+                    std::cout << "\033[35m3. Comparar países\033[0m\n";
+                    std::cout << "\033[36m4. Comparar productos\033[0m\n";
+                    std::cout << "\033[31m5. Productos por debajo de umbral\033[0m\n";
+                    std::cout << "\033[31m6. Productos por encima de umbral\033[0m\n";
+                    std::cout << "\033[31m7. Volver al menú principal\033[0m\n";
+
+                    subopcion = leerEnteroSeguro("Seleccione una opción: ");
+                    auto start = high_resolution_clock::now();
+                    switch (subopcion) {
+                        case 1: ventasPorCiudad(ventas); break;
+                        case 2: ventasPorRangoDeFechasYpais(ventas); break;
+                        case 3: compararPaises(ventas); break;
+                        case 4: compararProductos(ventas); break;
+                        case 5: productosPorDebajoDeUmbral(ventas); break;
+                        case 6: productosPorEncimaDeUmbral(ventas); break;
+                        case 7: std::cout << "Volviendo...\n"; break;
+                        default: std::cout << "Opción inválida.\n"; break;
+                    }
+                    auto end = high_resolution_clock::now();
+                    auto duration = duration_cast<milliseconds>(end - start);
+                    if (subopcion >= 1 && subopcion <= 6)
+                        cout << "⏱ Tiempo: " << duration.count() << " ms\n";
+                        cout<<"Cantidad de IFs utilizados: " << contadorIfs << endl;
+
+                } while (subopcion != 7);
+                break;
+            }
+
+            case 7:
+                std::cout << "\033[31mSaliendo del programa.\033[0m\n";
+                break;
+
+            default:
+                std::cout << "\033[31mOpción inválida.\033[0m\n";
+                break;
+        }
+
+    } while (opcion != 7);
 
     return 0;
 }
