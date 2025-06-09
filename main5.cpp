@@ -99,13 +99,23 @@ void mostrarVentasRecursivo(const vector<Venta>& ventas, int idx = 0) {
 // Busca una venta por ID usando un HASHMAP (HashMap<int, Venta*>).
 void buscarVentaPorIDHashMap(HashMap<int, Venta*>& ventasPorID) {
     int id;
-    cout << "Ingrese el ID de la venta a buscar: ";
-    cin >> id;
+    string entrada;
+    while (true) {
+        cout << "Ingrese el ID de la venta a buscar: ";
+        cin >> entrada;
+        cin.ignore();
+        try {
+            id = stoi(entrada);
+            break;
+        } catch (...) {
+            cout << "\033[31mEntrada inválida. Por favor, ingrese un número válido.\033[0m\n";
+        }
+    }
     try {
         Venta* v = ventasPorID.get(id);
-        cout << "Venta encontrada: " << v->idVenta << " | " << v->fecha<<" | "<<v->pais<<" | "<<v->ciudad<<" | "<<v->cliente <<
-            " | "<<v->producto<<" | "<<v->categoria <<" | "<<v->cantidad <<" | "<<v->precioUnitario<<" | "<<v->montoTotal<<" | "
-        <<v->medioEnvio<<" | "<<v->estadoEnvio<<endl;
+        cout << "Venta encontrada: " << v->idVenta << " | " << v->fecha << " | " << v->pais << " | " << v->ciudad << " | " << v->cliente <<
+            " | " << v->producto << " | " << v->categoria << " | " << v->cantidad << " | " << v->precioUnitario << " | " << v->montoTotal << " | "
+            << v->medioEnvio << " | " << v->estadoEnvio << endl;
     } catch (...) {
         cout << "No se encontró una venta con el ID: " << id << endl;
     }
@@ -988,22 +998,26 @@ int main() {
                 buscarVentaPorIDHashMap(ventasPorID);
                 auto end = high_resolution_clock::now();
                 auto duration = duration_cast<milliseconds>(end - start);
+                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
                 cout << "\033[32m⏱ Tiempo: " << duration.count() << " ms\033[0m\n";
                 break;
             }
             case 2:
                 cargarNuevaVenta(ventas, archivoCSV);
                 ventasPorID.put(ventas.back().idVenta, &ventas.back());
+                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
                 break;
             case 3:
                 eliminarVenta(ventas, archivoCSV);
                 ventasPorID = HashMap<int, Venta*>(ventas.size() * 2);
                 for (auto& v : ventas) ventasPorID.put(v.idVenta, &v);
+                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
                 break;
             case 4:
                 modificarVenta(ventas, archivoCSV);
                 ventasPorID = HashMap<int, Venta*>(ventas.size() * 2);
                 for (auto& v : ventas) ventasPorID.put(v.idVenta, &v);
+                cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
                 break;
 
             case 5: {
@@ -1022,14 +1036,29 @@ int main() {
                     subopcionEstadisticas = leerEnteroSeguro("Seleccione una opción (1-8): ");
                     auto start = high_resolution_clock::now();
                     switch (subopcionEstadisticas) {
-                        case 1: Top5CiudadesPorPais(ventas); break;
-                        case 2: montoTotalPorProductoPorPais(ventas); break;
-                        case 3: promedioCategoriaPorPais(ventas); break;
-                        case 4: estadoMasFrecuentePorPais(ventas); break;
-                        case 5: productoMasYMenosVendido(ventas); break;
-                        case 6: diaConMasVentas(ventas); break;
-                        case 7: medioDeEnvioMasFrecuentePorPais(ventas); break;
-                        case 8: std::cout << "Volviendo al menú principal.\n"; break;
+                        case 1: Top5CiudadesPorPais(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 2: montoTotalPorProductoPorPais(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 3: promedioCategoriaPorPais(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 4: estadoMasFrecuentePorPais(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 5: productoMasYMenosVendido(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 6: diaConMasVentas(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 7: medioDeEnvioMasFrecuentePorPais(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 8: std::cout << "Volviendo al menú principal.\n";
+                        break;
                         default: std::cout << "\033[31mOpción inválida.\033[0m\n"; break;
                     }
                     auto end = high_resolution_clock::now();
@@ -1056,12 +1085,24 @@ int main() {
                     subopcion = leerEnteroSeguro("Seleccione una opción: ");
                     auto start = high_resolution_clock::now();
                     switch (subopcion) {
-                        case 1: ventasPorCiudad(ventas); break;
-                        case 2: ventasPorRangoDeFechasYpais(ventas); break;
-                        case 3: compararPaises(ventas); break;
-                        case 4: compararProductos(ventas); break;
-                        case 5: productosPorDebajoDeUmbral(ventas); break;
-                        case 6: productosPorEncimaDeUmbral(ventas); break;
+                        case 1: ventasPorCiudad(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: VECTOR\033[0m" << endl;
+                        break;
+                        case 2: ventasPorRangoDeFechasYpais(ventas);
+                        cout << "\033[34mLa estructura utilizada fue: VECTOR\033[0m" << endl;
+                        break;
+                        case 3: compararPaises(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 4: compararProductos(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 5: productosPorDebajoDeUmbral(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
+                        case 6: productosPorEncimaDeUmbral(ventas); 
+                        cout << "\033[34mLa estructura utilizada fue: HASHMAP\033[0m" << endl;
+                        break;
                         case 7: std::cout << "Volviendo...\n"; break;
                         default: std::cout << "Opción inválida.\n"; break;
                     }
